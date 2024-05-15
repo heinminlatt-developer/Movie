@@ -16,55 +16,66 @@ import Icon from 'react-native-vector-icons/Ionicons';
 const TrendingMovie = ({navigation}) => {
   const [loading, setLoading] = useState(true);
   const [movies, setMovies] = useState([]);
+  const [originalMovies, setOriginalMovies] = useState([]);
+  const [searchText, setSearchText] = useState('');
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const getMovies = async () => {
-      const data = await GET('/movie/top_rated');
-      setMovies(data.results);
-      setLoading(false);
+      try {
+        const data = await GET('/movie/top_rated');
+        setMovies(data.results);
+        setOriginalMovies(data.results);
+      } catch (e) {
+        setError('Failed to fetch data');
+      } finally {
+        setLoading(false);
+      }
     };
     getMovies();
   }, []);
-  console.log('TrendingMovies=>===>', movies);
 
-  const searchMovie = () => {
-    console.log('search');
+  const searchMovie = text => {
+    setSearchText(text);
+    if (text.length > 0) {
+      const filteredMovies = originalMovies.filter(movie =>
+        movie.title.toLowerCase().includes(text.toLowerCase()),
+      );
+      setMovies(filteredMovies);
+    } else {
+      setMovies(originalMovies);
+    }
   };
+
   return (
     <View style={styles.container}>
       {loading ? (
         <Loader />
       ) : (
         <SafeAreaView style={styles.flatContainer}>
-          <Text style={styles.heading}>Tending movies</Text>
-          <View
-            style={{
-              justifyContent: 'space-around',
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginBottom: 20,
-            }}>
+          <Text style={styles.heading}>Trending Movies</Text>
+          <View style={styles.searchContainer}>
             <TextInput
-              onChangeText={text => {
-                searchMovie(text);
-              }}
+              onChangeText={searchMovie}
+              value={searchText}
               placeholder="Search"
-              style={{
-                width: '80%',
-                backgroundColor: 'white',
-                borderRadius: 20,
-                fontSize: 20,
-              }}
+              style={styles.searchInput}
             />
-            <Icon name="search" size={50} color="pink" />
+            <TouchableOpacity onPress={searchMovie}>
+              <Icon name="search" size={30} color="pink" />
+            </TouchableOpacity>
           </View>
-          <FlatList
-            keyExtractor={item => item.id.toString()}
-            renderItem={({item}) => displayMovies({item, navigation})}
-            data={movies}
-            numColumns={2}
-            showsVerticalScrollIndicator={false}
-          />
+          {error ? (
+            <Text style={styles.errorText}>{error}</Text>
+          ) : (
+            <FlatList
+              keyExtractor={item => item.id.toString()}
+              renderItem={({item}) => displayMovies({item, navigation})}
+              data={movies}
+              numColumns={2}
+              showsVerticalScrollIndicator={false}
+            />
+          )}
         </SafeAreaView>
       )}
     </View>
@@ -72,8 +83,6 @@ const TrendingMovie = ({navigation}) => {
 };
 
 const displayMovies = ({item, navigation}) => {
-  console.log('Navigation', navigation);
-  console.log('Item of Id=>', item.id);
   return (
     <View style={styles.listContainer}>
       <View style={styles.imageContainer}>
@@ -88,9 +97,8 @@ const displayMovies = ({item, navigation}) => {
             }}
           />
         </TouchableOpacity>
-
         <Text style={styles.titleText}>{item.title}</Text>
-        <Text style={styles.ratingText}>⭐⭐⭐⭐⭐: {item.vote_average}</Text>
+        <Text style={styles.ratingText}>⭐⭐⭐⭐⭐ {item.vote_average}</Text>
       </View>
     </View>
   );
@@ -113,6 +121,18 @@ const styles = StyleSheet.create({
     fontSize: 19,
     margin: 10,
     fontWeight: 'bold',
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  searchInput: {
+    width: '80%',
+    backgroundColor: 'white',
+    borderRadius: 20,
+    fontSize: 20,
+    paddingHorizontal: 15,
   },
   listContainer: {
     justifyContent: 'center',
@@ -140,10 +160,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginLeft: 15,
     fontSize: 15,
+    marginTop: 5,
   },
   ratingText: {
     color: 'orange',
     marginLeft: 15,
     fontWeight: 'bold',
+  },
+  errorText: {
+    color: 'pink',
+    textAlign: 'center',
+    alignSelf: 'flex-start',
+    fontWeight: 'bold',
+    fontSize: 25,
+    marginTop: 20,
   },
 });

@@ -44,16 +44,29 @@ const MovieDetails = () => {
             )}
           </View>
           {details && (
-            <ScrollView style={{flex:1,}}>
-            <View style={styles.detailsContainer}>
-              <Text style={styles.title}>{details.title}</Text>
-              <Text style={styles.overview}>ID:{details.id}</Text>
-              <Text style={styles.overview}>Budget:{details.budget} USD</Text>
-              <Text style={styles.overview}>{details.overview}</Text>
-              
-              <Text style={styles.overview}>{details.overview}</Text>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: 'space-between',
+                flexDirection: 'row',
+              }}>
+              <Image
+                source={{
+                  uri: `https://image.tmdb.org/t/p/original/${details.backdrop_path}`,
+                }}
+                style={{width: 200, height: 200}}
+              />
+              <View style={styles.detailsContainer}>
+                <Text style={styles.title}>{details.title}</Text>
+                <Text style={styles.overview}>ID:{details.id}</Text>
+                <Text style={styles.overview}>Budget:{details.budget} USD</Text>
+                <View>
+                  <Text style={styles.overview}>
+                    Over View:{details.overview} USD
+                  </Text>
+                </View>
+              </View>
             </View>
-            </ScrollView>
           )}
         </View>
       )}
@@ -85,7 +98,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
-    color:'pink',
+    color: 'pink',
   },
   overview: {
     fontSize: 16,
