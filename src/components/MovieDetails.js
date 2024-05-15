@@ -4,7 +4,6 @@ import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {GET} from '../services/API';
 import Styles from '../style/Styles';
 import Loader from './Loader';
-
 const MovieDetails = () => {
   const [loading, setLoading] = useState(true);
   const [details, setDetails] = useState(null);
