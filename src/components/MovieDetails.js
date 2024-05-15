@@ -46,7 +46,7 @@ const MovieDetails = () => {
           {details && (
             <View
               style={{
-                flex: 1,
+                flex: 0.5,
                 justifyContent: 'space-between',
                 flexDirection: 'row',
                 paddingHorizontal: 20,
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   detailsContainer: {
-    marginTop: 100,
+    marginTop: 50,
     padding: 20,
   },
   title: {
