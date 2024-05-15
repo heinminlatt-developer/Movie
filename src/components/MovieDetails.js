@@ -49,12 +49,14 @@ const MovieDetails = () => {
                 flex: 1,
                 justifyContent: 'space-between',
                 flexDirection: 'row',
+                paddingHorizontal: 20,
+                alignItems: 'center',
               }}>
               <Image
                 source={{
                   uri: `https://image.tmdb.org/t/p/original/${details.backdrop_path}`,
                 }}
-                style={{width: 200, height: 200}}
+                style={{width: 150, height: 150}}
               />
               <View style={styles.detailsContainer}>
                 <Text style={styles.title}>{details.title}</Text>
@@ -92,6 +94,7 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   detailsContainer: {
+    marginTop: 100,
     padding: 20,
   },
   title: {
